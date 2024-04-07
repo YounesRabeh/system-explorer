@@ -67,7 +67,7 @@ public final class PathResolver {
      *
      * @param fileName      The name of the file to search for.
      * @param directory The root directory to start searching from.
-     * @param depth         The maximum depth of directory traversal. {@code depth <= 0} <b>means same directory</b>.
+     * @param depth         The maximum depth of directory traversal. {@code depth <= 0 or equals null} <b>means same directory</b>.
      * @return true if the file exists within the directory tree, false otherwise.
      * @throws NullPointerException If the provided {@code fileName} or {@code directory} are null.
      * @throws StackOverflowError If {@code depth} is deeper than the call stack due to excessive recursion.
@@ -92,7 +92,7 @@ public final class PathResolver {
      *
      * @param fileName      The name of the file to search for.
      * @param directoryPath The path of the root directory to start searching from.
-     * @param depth         The maximum depth of directory traversal. {@code depth <= 0} <b>means same directory</b>.
+     * @param depth         The maximum depth of directory traversal. {@code depth <= 0 or equals null} <b>means same directory</b>.
      * @return true if the file exists within the directory tree, false otherwise.
      * @throws NullPointerException If the provided {@code fileName} or {@code directory} are null.
      * @throws StackOverflowError If {@code depth} is deeper than the call stack due to excessive recursion.
@@ -102,23 +102,6 @@ public final class PathResolver {
     }
 
 
-    // Example usage
-    public static void main(String[] args) {
-        String fileName = "PathResolver.java";
-        String directoryPath = "/home/yuyu/IdeaProjects/system-explorer/src";
-        int depth = -1; // Specify the depth of directory traversal
-
-        try {
-            boolean fileExists = doesFileExists(fileName, directoryPath, depth);
-            if (fileExists) {
-                System.out.println("The file exists in the directory tree.");
-            } else {
-                System.out.println("The file does not exist in the directory tree.");
-            }
-        } catch (IllegalArgumentException e) {
-            System.err.println("Error: " + e.getMessage());
-        }
-    }
 
 }
 
