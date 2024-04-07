@@ -1,7 +1,6 @@
 import java.io.File;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
-import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -14,7 +13,6 @@ import java.nio.file.Paths;
  * @version under Dev
  */
 public final class PathResolver {
-
     private PathResolver() {
         // Private constructor to prevent instantiation
     }
@@ -69,43 +67,12 @@ public final class PathResolver {
      *
      * @param fileName      The name of the file to search for.
      * @param directory The root directory to start searching from.
-     * @param depth         The maximum depth of directory traversal. {@code depth = 0} <b>means same directory</b>.
+     * @param depth         The maximum depth of directory traversal. {@code depth <= 0} <b>means same directory</b>.
      * @return true if the file exists within the directory tree, false otherwise.
      * @throws NullPointerException If the provided {@code fileName} or {@code directory} are null.
-     * @throws IndexOutOfBoundsException If {@code depth} is negative or greater than {@link Integer#MAX_VALUE}
      * @throws StackOverflowError If {@code depth} is deeper than the call stack due to excessive recursion.
      */
-    public static boolean doesFileExists(String fileName, File directory, int depth) {
-        return searchFileInDirectoryTree(fileName, directory, depth);
-    }
-
-    /**
-     * Checks if a file exists within a directory tree up to a certain depth.
-     *
-     * @param fileName      The name of the file to search for.
-     * @param directoryPath The path of the root directory to start searching from.
-     * @param depth         The maximum depth of directory traversal. {@code depth = 0} <b>means same directory</b>.
-     * @return true if the file exists within the directory tree, false otherwise.
-     * @throws NullPointerException If the provided {@code fileName} or {@code directory} are null.
-     * @throws IndexOutOfBoundsException If {@code depth} is negative or greater than {@link Integer#MAX_VALUE}.
-     * @throws StackOverflowError If {@code depth} is deeper than the call stack due to excessive recursion.
-     */
-    public static boolean doesFileExists(String fileName, String directoryPath, int depth) {
-        return searchFileInDirectoryTree(fileName, new File(directoryPath), depth);
-    }
-
-    /**
-     * Recursively searches for a file within a directory tree.
-     *
-     * @param fileName  The name of the file to search for.
-     * @param directory The root directory to start searching from.
-     * @param depth         The maximum depth of directory traversal. {@code depth = 0} <b>means same directory</b>.
-     * @return true if the file exists within the directory tree, false otherwise.
-     * @throws NullPointerException If the provided {@code directory} is null.
-     * @throws IndexOutOfBoundsException If {@code depth} is negative or greater than {@link Integer#MAX_VALUE}.
-     * @throws StackOverflowError If {@code depth} is deeper than the call stack due to excessive recursion.
-     */
-    private static boolean searchFileInDirectoryTree(String fileName, File directory, int depth) {
+    public static boolean doesFileExists(String fileName, File directory, Integer depth) {
         if (!directory.exists() || !directory.isDirectory()) return false;
         File file = new File(directory, fileName);
         if (file.exists() && file.isFile()) return true;
@@ -114,10 +81,43 @@ public final class PathResolver {
         File[] subDirectories = directory.listFiles(File::isDirectory);
         if (subDirectories != null) {
             for (File subDirectory : subDirectories) {
-                if (searchFileInDirectoryTree(fileName, subDirectory, depth)) return true;
+                if (doesFileExists(fileName, subDirectory, depth)) return true;
             }
         }
         return false;
+    }
+
+    /**
+     * Checks if a file exists within a directory tree up to a certain depth.
+     *
+     * @param fileName      The name of the file to search for.
+     * @param directoryPath The path of the root directory to start searching from.
+     * @param depth         The maximum depth of directory traversal. {@code depth <= 0} <b>means same directory</b>.
+     * @return true if the file exists within the directory tree, false otherwise.
+     * @throws NullPointerException If the provided {@code fileName} or {@code directory} are null.
+     * @throws StackOverflowError If {@code depth} is deeper than the call stack due to excessive recursion.
+     */
+    public static boolean doesFileExists(String fileName, String directoryPath, Integer depth) {
+        return doesFileExists(fileName, new File(directoryPath), depth);
+    }
+
+
+    // Example usage
+    public static void main(String[] args) {
+        String fileName = "PathResolver.java";
+        String directoryPath = "/home/yuyu/IdeaProjects/system-explorer/src";
+        int depth = -1; // Specify the depth of directory traversal
+
+        try {
+            boolean fileExists = doesFileExists(fileName, directoryPath, depth);
+            if (fileExists) {
+                System.out.println("The file exists in the directory tree.");
+            } else {
+                System.out.println("The file does not exist in the directory tree.");
+            }
+        } catch (IllegalArgumentException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
     }
 
 }
