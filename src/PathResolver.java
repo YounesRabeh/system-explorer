@@ -154,6 +154,7 @@ public final class PathResolver {
      * @param parentDirectory The parent directory against which the child directory's depth is measured.
      * @return The depth of the child directory relative to the parent directory. {@code depth <= 0} <b>means same directory</b>.
      * <p>Returns -1 if the child directory is not nested within the parent directory or if a generic I/O error occurs.
+     * @throws NullPointerException If the provided {@code childDirectory} or {@code parentDirectory} are null.
      */
     public static int getDirectoryDepthIn(File childDirectory, File parentDirectory) {
         try {
