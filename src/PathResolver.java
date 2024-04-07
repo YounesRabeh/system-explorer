@@ -16,6 +16,7 @@ public final class PathResolver {
     private PathResolver() {
         // Private constructor to prevent instantiation
     }
+    //FIXME: don't use recursion, use path matching instead
 
     /**
      * Gets the directory of the currently executing JAR file.
