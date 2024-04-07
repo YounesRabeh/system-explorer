@@ -17,6 +17,7 @@ public final class PathResolver {
         // Private constructor to prevent instantiation
     }
 
+
     /**
      * Gets the directory of the currently executing JAR file.
      *
