@@ -18,6 +18,7 @@ public final class PathResolver {
     }
 
 
+
     /**
      * Gets the directory of the currently executing JAR file.
      *
