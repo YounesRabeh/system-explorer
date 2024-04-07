@@ -17,8 +17,6 @@ public final class PathResolver {
         // Private constructor to prevent instantiation
     }
 
-
-
     /**
      * Gets the directory of the currently executing JAR file.
      *
@@ -89,18 +87,63 @@ public final class PathResolver {
         return false;
     }
 
+
     /**
-     * Checks if a file exists within a directory tree up to a certain depth.
+     * Checks if a directory exists.
      *
-     * @param fileName      The name of the file to search for.
-     * @param directoryPath The path of the root directory to start searching from.
-     * @param depth         The maximum depth of directory traversal. {@code depth <= 0 or equals null} <b>means same directory</b>.
-     * @return true if the file exists within the directory tree, false otherwise.
-     * @throws NullPointerException If the provided {@code fileName} or {@code directory} are null.
-     * @throws StackOverflowError If {@code depth} is deeper than the call stack due to excessive recursion.
+     * @param directoryPath The path of the directory to check.
+     * @return true if the directory exists, false otherwise.
+     * @throws NullPointerException If the provided {@code directoryPath} is null.
      */
-    public static boolean doesFileExists(String fileName, String directoryPath, Integer depth) {
-        return doesFileExists(fileName, new File(directoryPath), depth);
+    public static boolean doesDirectoryExists(File directoryPath) {
+        return directoryPath.exists() && directoryPath.isDirectory();
+    }
+
+    /**
+     * Checks if a directory exists within a given directory tree up to a certain depth.
+     * @param directoryName The name of the directory to search for.
+     * @param directory The root directory to start searching from.
+     * @param depth     The maximum depth of directory traversal.
+     * @return true if the directory exists within the directory tree, false otherwise.
+     * @throws NullPointerException If the provided {@code directory} is null.
+     * @throws StackOverflowError     If {@code depth} is deeper than the call stack due to excessive recursion.
+     */
+    public static boolean doesDirectoryExistsIn(String directoryName, File directory, Integer depth) {
+        if (directory == null
+                || !directory.exists()
+                || !directory.isDirectory()
+                || (depth != null && depth <= 0))
+        {return false;}
+        if (directory.getName().equals(directoryName)) return true;
+        if (depth != null) depth--;
+
+        File[] subDirectories = directory.listFiles(File::isDirectory);
+        if (subDirectories != null) {
+            for (File subDirectory : subDirectories) {
+                if (doesDirectoryExistsIn(directoryName, subDirectory, depth)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+    public static void main(String[] args) {
+        String fileName = "src";
+        String directoryPath = "/home/yuyu/IdeaProjects/system-explorer/";
+        int depth = 3; // Specify the depth of directory traversal
+
+        try {
+            boolean fileExists = doesDirectoryExistsIn(fileName, new File(directoryPath), depth);
+            if (fileExists) {
+                System.out.println("The file exists in the directory tree.");
+            } else {
+                System.out.println("The file does not exist in the directory tree.");
+            }
+        } catch (IllegalArgumentException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
     }
 
 
