@@ -334,9 +334,6 @@ public final class PathResolver {
         return false;
     }
 
-    public static void resolvePath(String path) {
-        System.out.println("Path: " + path);
-    }
 
 }
 
