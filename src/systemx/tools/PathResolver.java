@@ -137,7 +137,7 @@ public final class PathResolver {
      * @param depth     The maximum depth of directory traversal.
      * @return true if the directory exists within the directory tree, false otherwise.
      * @throws NullPointerException If the provided {@code directory} is null.
-     * @throws StackOverflowError     If {@code depth} is deeper than the call stack due to excessive recursion.
+     * @throws StackOverflowError If {@code depth} is deeper than the call stack due to excessive recursion.
      */
     public static boolean doesDirectoryExistsIn(String directoryName, File directory, Integer depth){
         if (checkNull(directoryName, directory)) throw new NullPointerException();
@@ -191,28 +191,124 @@ public final class PathResolver {
     }
 
     /**
-     * Creates a directory if it does not exist.
+     * Creates a directory.
      *
      * @param directoryPath The path of the directory to create.
      * @return The created directory.
      * @throws NullPointerException If the provided {@code directoryPath} is null.
      * @throws FailedToCreateException If the directory could not be created.
      */
-    public static File createDirectoryIfNotExists(String directoryPath) throws FailedToCreateException {
-        if (directoryPath == null) throw new NullPointerException();
+    public static File createDirectory(String directoryPath) throws FailedToCreateException {
+        if (checkNull(directoryPath)) throw new NullPointerException();
         final File directory = new File(directoryPath);
-        if (!directory.exists()) {
-            if (!directory.mkdirs()) throw new FailedToCreateException(directoryPath);
-        }
+        if (!directory.mkdirs()) throw new FailedToCreateException(directoryPath);
         return directory;
     }
 
+    /**
+     * Creates a File in the directory.
+     *
+     * @param directory The directory to create.
+     * @return The created directory.
+     * @throws NullPointerException If the provided {@code directory} is null.
+     * @throws FailedToCreateException If the directory could not be created.
+     */
+    public static File createFileInDirectory(
+            String fileName,
+            File directory
+    ) throws DoNotExistsException, FailedToCreateException {
+        if (checkNull(fileName, directory)) throw new NullPointerException();
+        if (!directory.exists() || !directory.isDirectory()) throw new DoNotExistsException(directory);
+        File file = new File(directory, fileName);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                throw new FailedToCreateException("Failed to create file: " + file);
+            }
+        }
+        return file;
+    }
+
+    /**
+     * Deletes a directory.
+     *
+     * @param directory The directory to delete.
+     * @throws NullPointerException If the provided {@code directory} is null.
+     * @throws DoNotExistsException If the directory does not exist.
+     * @throws StackOverflowError If recursion depth surpasses the call stack size due to excessive recursion.
+     */
+    public static void deleteDirectory(File directory) throws DoNotExistsException {
+        if (checkNull(directory)) throw new NullPointerException();
+        if (!directory.exists()) throw new DoNotExistsException(directory);
+        File[] files = directory.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    deleteDirectory(file);
+                } else {
+                    file.delete();
+                }
+            }
+        }
+        directory.delete();
+    }
+
+    /**
+     * Deletes a file.
+     *
+     * @param file The file to delete.
+     * @throws NullPointerException If the provided {@code file} is null.
+     * @throws DoNotExistsException If the file does not exist.
+     */
+    public static void deleteFile(File file) throws DoNotExistsException {
+        if (checkNull(file)) throw new NullPointerException();
+        if (!file.exists()) throw new DoNotExistsException(file);
+        file.delete();
+    }
+
+    /**
+     * Gets the files in a directory.
+     *
+     * @param directory The directory to get the files from.
+     * @return An array of files in the directory.
+     * @throws NullPointerException If the provided {@code directory} is null.
+     * @throws DoNotExistsException If the directory does not exist.
+     */
+    public static File[] getFilesInDirectory(File directory) throws DoNotExistsException{
+        if (checkNull(directory)) throw new NullPointerException();
+        if (!directory.exists() || !directory.isDirectory()) throw new DoNotExistsException(directory);
+        return directory.listFiles();
+    }
+
+    /**
+     * Gets the directories in a directory.
+     *
+     * @param directory The directory to get the directories from.
+     * @return An array of directories in the directory.
+     * @throws NullPointerException If the provided {@code directory} is null.
+     * @throws DoNotExistsException If the directory does not exist.
+     */
+    public static File[] getDirectoriesInDirectory(File directory) throws DoNotExistsException{
+        if (checkNull(directory)) throw new NullPointerException();
+        if (!directory.exists() || !directory.isDirectory()) throw new DoNotExistsException(directory);
+        return directory.listFiles(File::isDirectory);
+    }
+
+
+
+    /**
+     * Checks if any of the provided objects are null.
+     * @param objects The objects to check for null.
+     * @return true if any of the objects are null, false otherwise.
+     */
     public static boolean checkNull(Object... objects) {
         for (Object object : objects) {
             if (object == null) return true;
         }
         return false;
     }
+
 
 
 }
