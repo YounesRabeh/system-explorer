@@ -1,9 +1,14 @@
+import exceptions.DoNotExistsException;
+import exceptions.FailedToCreateException;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import static lib.Colors.colorString;
 
 /**
  * A utility class for resolving paths.
@@ -94,12 +99,11 @@ public final class PathResolver {
      * @throws NullPointerException If the provided {@code directory} is null.
      * @throws StackOverflowError     If recursion depth surpasses the call stack size due to excessive recursion.
      */
-    public static boolean doesDirectoryExistsIn(String directoryName, File directory) {
-        if (directory == null
-                || !directory.exists()
-                || !directory.isDirectory())
-        {return false;}
+    public static boolean doesDirectoryExistsIn(String directoryName, File directory){
+        if (checkNull(directoryName, directory)) throw new NullPointerException();
+        if (!directory.isDirectory() || !directory.exists()) return false;
         if (directory.getName().equals(directoryName)) return true;
+
         File[] subDirectories = directory.listFiles(File::isDirectory);
         if (subDirectories != null) {
             for (File subDirectory : subDirectories) {
@@ -111,13 +115,17 @@ public final class PathResolver {
 
     /**
      * Checks if the childDirectory exists within a given parentDirectory.
-     * @param childDirectory The name of the directory to search for.
+     * @param childDirectory The directory to search for.
      * @param parentDirectory The root directory to start searching from.
      * @return true if the directory exists within the directory tree, false otherwise.
      * @throws NullPointerException If the provided {@code directory} is null.
+     * @throws DoNotExistsException If the directory does not exist.
      * @throws StackOverflowError     If recursion depth surpasses the call stack size due to excessive recursion.
      */
-    public static boolean doesDirectoryExistsIn(File childDirectory, File parentDirectory){
+    public static boolean doesDirectoryExistsIn(
+            File childDirectory,
+            File parentDirectory
+    ) throws DoNotExistsException {
         return getDirectoryDepthIn(childDirectory, parentDirectory) >= 0;
     }
 
@@ -130,14 +138,13 @@ public final class PathResolver {
      * @throws NullPointerException If the provided {@code directory} is null.
      * @throws StackOverflowError     If {@code depth} is deeper than the call stack due to excessive recursion.
      */
-    public static boolean doesDirectoryExistsIn(String directoryName, File directory, Integer depth) {
-        if (directory == null
-                || !directory.exists()
-                || !directory.isDirectory()
-                || (depth != null && depth <= 0))
-        {return false;}
+    public static boolean doesDirectoryExistsIn(String directoryName, File directory, Integer depth){
+        if (checkNull(directoryName, directory)) throw new NullPointerException();
+        if (!directory.exists()) return false;
+        if (directory.isDirectory() && (depth != null && depth <= 0)) return false;
         if (directory.getName().equals(directoryName)) return true;
-        File[] subDirectories = directory.listFiles(File::isDirectory);
+
+        final File[] subDirectories = directory.listFiles(File::isDirectory);
         if (subDirectories != null) {
             for (File subDirectory : subDirectories) {
                 if (doesDirectoryExistsIn(directoryName, subDirectory, depth)) return true;
@@ -154,13 +161,19 @@ public final class PathResolver {
      * @return The depth of the child directory relative to the parent directory. {@code depth <= 0} <b>means same directory</b>.
      * <p>Returns -1 if the child directory is not nested within the parent directory or if a generic I/O error occurs.
      * @throws NullPointerException If the provided {@code childDirectory} or {@code parentDirectory} are null.
+     * @throws DoNotExistsException If the child or parent directory does not exist.
      */
-    public static int getDirectoryDepthIn(File childDirectory, File parentDirectory) {
-        if (!childDirectory.exists() || !parentDirectory.exists()) {
-            throw new IllegalArgumentException("Both directories must exist");
+    public static int getDirectoryDepthIn(
+            File childDirectory,
+            File parentDirectory
+    ) throws DoNotExistsException {
+        if (childDirectory == null || parentDirectory == null) throw new NullPointerException();
+        final boolean childExists = childDirectory.exists();
+        if (!childExists || !parentDirectory.exists()){
+            throw new DoNotExistsException(childExists ? parentDirectory : childDirectory);
         }
-        try {
 
+        try {
             String childCanonicalPath = childDirectory.getCanonicalFile().getPath();
             String parentCanonicalPath = parentDirectory.getCanonicalFile().getPath() + File.separator;
 
@@ -171,10 +184,44 @@ public final class PathResolver {
                 }
                 return depth;
             } else return -1;
-        } catch (IOException dirAreNotNested) {return -1;}
+        } catch (IOException dirAreNotNested) {
+            return -1;
+        }
     }
 
+    /**
+     * Creates a directory if it does not exist.
+     *
+     * @param directoryPath The path of the directory to create.
+     * @return The created directory.
+     * @throws NullPointerException If the provided {@code directoryPath} is null.
+     * @throws FailedToCreateException If the directory could not be created.
+     */
+    public static File createDirectoryIfNotExists(String directoryPath) throws FailedToCreateException {
+        if (directoryPath == null) throw new NullPointerException();
+        final File directory = new File(directoryPath);
+        if (!directory.exists()) {
+            if (!directory.mkdirs()) throw new FailedToCreateException(directoryPath);
+        }
+        return directory;
+    }
 
+    public static void main(String[] args) {
+        //print the message using try
+        try {
+            throw new FailedToCreateException("/home/yuyu/IdeaProjects/system-explorer/sgdnb");
+        } catch (FailedToCreateException e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
+
+    public static boolean checkNull(Object... objects) {
+        for (Object object : objects) {
+            if (object == null) return true;
+        }
+        return false;
+    }
 
 
 }
