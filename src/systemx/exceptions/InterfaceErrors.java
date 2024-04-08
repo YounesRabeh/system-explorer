@@ -33,7 +33,6 @@ interface InterfaceErrors {
     String GREEN = "\033[0;32m";
 
 
-
     /**
      * A constant string that represents the color to be used for error messages.
      */
@@ -78,8 +77,5 @@ interface InterfaceErrors {
      * A constant string that represents the error message to be displayed when a directory fails to be created.
      */
     String FAILED_TO_CREATE_DIRECTORY = ERROR_MESSAGE + "Failed to create directory: ";
-
-
-
 
 }

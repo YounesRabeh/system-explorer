@@ -296,6 +296,31 @@ public final class PathResolver {
     }
 
 
+    /**
+     * Gets the file in a directory.
+     *
+     * @param fileName The name of the file to get.
+     * @param directory The directory to get the file from.
+     * @return The file in the directory, or null if the file does not exist.
+     * @throws NullPointerException If the provided {@code fileName} or {@code directory} are null.
+     */
+    public static File getFileInDirectory(String fileName, File directory) {
+        if (checkNull(fileName, directory)) throw new NullPointerException();
+        return doesFileExists(fileName, directory) ? new File(directory, fileName) : null;
+    }
+
+    /**
+     * Gets the directory in a directory.
+     *
+     * @param directoryName The name of the directory to get.
+     * @param directory The directory to get the directory from.
+     * @return The directory in the directory, or null if the directory does not exist.
+     * @throws NullPointerException If the provided {@code directoryName} or {@code directory} are null.
+     */
+    public static File getDirectoryInDirectory(String directoryName, File directory) {
+        if (checkNull(directoryName, directory)) throw new NullPointerException();
+        return doesDirectoryExistsIn(directoryName, directory) ? new File(directory, directoryName) : null;
+    }
 
     /**
      * Checks if any of the provided objects are null.
@@ -309,7 +334,9 @@ public final class PathResolver {
         return false;
     }
 
-
+    public static void resolvePath(String path) {
+        System.out.println("Path: " + path);
+    }
 
 }
 
