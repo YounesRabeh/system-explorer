@@ -50,7 +50,6 @@ public final class PathResolver {
         return file.exists() && file.isFile();
     }
 
-
     /**
      * Checks if a file exists within a directory tree up to a certain depth.
      *
@@ -157,7 +156,11 @@ public final class PathResolver {
      * @throws NullPointerException If the provided {@code childDirectory} or {@code parentDirectory} are null.
      */
     public static int getDirectoryDepthIn(File childDirectory, File parentDirectory) {
+        if (!childDirectory.exists() || !parentDirectory.exists()) {
+            throw new IllegalArgumentException("Both directories must exist");
+        }
         try {
+
             String childCanonicalPath = childDirectory.getCanonicalFile().getPath();
             String parentCanonicalPath = parentDirectory.getCanonicalFile().getPath() + File.separator;
 
@@ -171,23 +174,6 @@ public final class PathResolver {
         } catch (IOException dirAreNotNested) {return -1;}
     }
 
-
-    public static void main(String[] args) {
-        String fileName = "src";
-        String directoryPath = "/home/yuyu/IdeaProjects/system-explorer/";
-        int depth = 3; // Specify the depth of directory traversal
-
-        try {
-            boolean fileExists = doesDirectoryExistsIn(fileName, new File(directoryPath), depth);
-            if (fileExists) {
-                System.out.println("The file exists in the directory tree.");
-            } else {
-                System.out.println("The file does not exist in the directory tree.");
-            }
-        } catch (IllegalArgumentException e) {
-            System.err.println("Error: " + e.getMessage());
-        }
-    }
 
 
 
