@@ -1,11 +1,11 @@
-package exceptions;
+package systemx.exceptions;
 
 
 /**
  * InterfaceErrors is an interface that defines constants for different types of messages.
  * These constants are used throughout the application to maintain a consistent style for messages.
  */
-public interface InterfaceErrors {
+interface InterfaceErrors {
 
     /**
      * A constant string that represents the RESET color in console.

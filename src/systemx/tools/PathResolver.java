@@ -1,5 +1,7 @@
-import exceptions.DoNotExistsException;
-import exceptions.FailedToCreateException;
+package systemx.tools;
+
+import systemx.exceptions.DoNotExistsException;
+import systemx.exceptions.FailedToCreateException;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,7 +10,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static lib.Colors.colorString;
 
 /**
  * A utility class for resolving paths.
@@ -204,16 +205,6 @@ public final class PathResolver {
             if (!directory.mkdirs()) throw new FailedToCreateException(directoryPath);
         }
         return directory;
-    }
-
-    public static void main(String[] args) {
-        //print the message using try
-        try {
-            throw new FailedToCreateException("/home/yuyu/IdeaProjects/system-explorer/sgdnb");
-        } catch (FailedToCreateException e) {
-            System.out.println(e.getMessage());
-        }
-
     }
 
     public static boolean checkNull(Object... objects) {
