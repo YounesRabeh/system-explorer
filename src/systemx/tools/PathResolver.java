@@ -12,12 +12,12 @@ import java.nio.file.Paths;
 
 
 /**
- * A utility class for resolving paths.
+ * A utility class for paths related operations.
  * <p>
  * This class provides methods to work with system paths.
  *
  * @author Younes Rabeh
- * @version under Dev
+ * @version 1.0
  */
 public final class PathResolver {
     private PathResolver() {
@@ -246,9 +246,7 @@ public final class PathResolver {
             for (File file : files) {
                 if (file.isDirectory()) {
                     deleteDirectory(file);
-                } else {
-                    file.delete();
-                }
+                } else file.delete();
             }
         }
         directory.delete();
@@ -333,7 +331,5 @@ public final class PathResolver {
         }
         return false;
     }
-
-
 }
 
