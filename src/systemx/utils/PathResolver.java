@@ -1,14 +1,14 @@
-package systemx.tools;
+package systemx.utils;
+
+import java.nio.file.Path;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import systemx.exceptions.DoNotExistsException;
 import systemx.exceptions.FailedToCreateException;
-
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 
 /**
@@ -223,7 +223,7 @@ public final class PathResolver {
         File file = new File(directory, fileName);
         if (!file.exists()) {
             try {
-                file.createNewFile();
+                if (!file.createNewFile()) throw new FailedToCreateException(file);
             } catch (IOException e) {
                 throw new FailedToCreateException(file);
             }

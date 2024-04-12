@@ -57,12 +57,12 @@ interface InterfaceErrors {
     /**
      * A constant string that represents the format of error messages.
      */
-    String ERROR_MESSAGE = ERROR_COLOR + "⚠ ";
+    String ERROR_MESSAGE = ERROR_COLOR + "⚠ \"";
 
     /**
      * A constant string that represents the format of warning messages.
      */
-    String WARNING_MESSAGE = WARNING_COLOR + "⚠ ";
+    String WARNING_MESSAGE = WARNING_COLOR + "⚠ \"";
 
     /**
      * A constant string that represents the format of informational messages.
