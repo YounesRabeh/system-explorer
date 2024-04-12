@@ -169,9 +169,8 @@ public final class PathResolver {
             File parentDirectory
     ) throws DoNotExistsException {
         if (childDirectory == null || parentDirectory == null) throw new NullPointerException();
-        final boolean childExists = childDirectory.exists();
-        if (!childExists || !parentDirectory.exists()){
-            throw new DoNotExistsException(childExists ? parentDirectory : childDirectory);
+        if (!childDirectory.exists() || !parentDirectory.exists()){
+            throw new DoNotExistsException(childDirectory, parentDirectory);
         }
 
         try {
@@ -218,13 +217,15 @@ public final class PathResolver {
             File directory
     ) throws DoNotExistsException, FailedToCreateException {
         if (checkNull(fileName, directory)) throw new NullPointerException();
-        if (!directory.exists() || !directory.isDirectory()) throw new DoNotExistsException(directory);
+        if (!directory.exists() || !directory.isDirectory()) {
+            throw new DoNotExistsException(directory, directory);
+        }
         File file = new File(directory, fileName);
         if (!file.exists()) {
             try {
                 file.createNewFile();
             } catch (IOException e) {
-                throw new FailedToCreateException("Failed to create file: " + file);
+                throw new FailedToCreateException(file);
             }
         }
         return file;
@@ -293,7 +294,6 @@ public final class PathResolver {
         return directory.listFiles(File::isDirectory);
     }
 
-
     /**
      * Gets the file in a directory.
      *
@@ -325,7 +325,7 @@ public final class PathResolver {
      * @param objects The objects to check for null.
      * @return true if any of the objects are null, false otherwise.
      */
-    public static boolean checkNull(Object... objects) {
+    private static boolean checkNull(Object... objects) {
         for (Object object : objects) {
             if (object == null) return true;
         }

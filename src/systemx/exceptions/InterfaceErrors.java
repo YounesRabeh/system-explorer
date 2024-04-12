@@ -4,6 +4,8 @@ package systemx.exceptions;
 /**
  * InterfaceErrors is an interface that defines constants for different types of messages.
  * These constants are used throughout the application to maintain a consistent style for messages.
+ * @author Younes Rabeh
+ * @version 1.0
  */
 interface InterfaceErrors {
 
@@ -31,7 +33,6 @@ interface InterfaceErrors {
      * A constant string that represents the GREEN color in console.
      */
     String GREEN = "\033[0;32m";
-
 
     /**
      * A constant string that represents the color to be used for error messages.
@@ -72,10 +73,5 @@ interface InterfaceErrors {
      * A constant string that represents the format of success messages.
      */
     String SUCCESS_MESSAGE = SUCCESS_COLOR + "✔ " + RESET;
-
-    /**
-     * A constant string that represents the error message to be displayed when a directory fails to be created.
-     */
-    String FAILED_TO_CREATE_DIRECTORY = ERROR_MESSAGE + "Failed to create directory: ";
 
 }
