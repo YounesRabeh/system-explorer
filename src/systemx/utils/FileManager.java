@@ -69,6 +69,8 @@ public final class FileManager {
                 lineNumber++;
                 if (lineNumber >= start && lineNumber <= end) lines.add(line);
             }
+        } catch (IndexOutOfBoundsException e){
+            throw e;
         } catch (Exception e){
             throw new DoNotExistsException(file);
         }
@@ -290,7 +292,6 @@ public final class FileManager {
         overrideFile(file, lines.toArray(new String[0]));
     }
 
-
     /**
      * Deletes a line from a file.
      * @param file The file to delete from
@@ -304,37 +305,4 @@ public final class FileManager {
         lines.remove(lineNumber - 1);
         overrideFile(file, lines.toArray(new String[0]));
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public static void main(String[] args) {
-        String fileName = "PathResolver.java";
-        List<String> fileLines = null;
-        try {
-            fileLines = getFileLines(new File(fileName));
-        } catch (DoNotExistsException e) {
-            System.out.println(e.getMessage());
-        }
-
-        if (fileLines == null) return;
-        for (String line : fileLines) {
-            System.out.println(line);
-        }
-
-
-    }
-
-
-
-
 }

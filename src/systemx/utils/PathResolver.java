@@ -253,18 +253,6 @@ public final class PathResolver {
         directory.delete();
     }
 
-    /**
-     * Deletes a file.
-     *
-     * @param file The file to delete.
-     * @throws NullPointerException If the provided {@code file} is null.
-     * @throws DoNotExistsException If the file does not exist.
-     */
-    public static void deleteFile(File file) throws DoNotExistsException {
-        if (checkNull(file)) throw new NullPointerException();
-        if (!file.exists()) throw new DoNotExistsException(file);
-        file.delete();
-    }
 
     /**
      * Gets the files in a directory.
