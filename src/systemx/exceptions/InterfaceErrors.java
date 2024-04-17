@@ -67,11 +67,11 @@ interface InterfaceErrors {
     /**
      * A constant string that represents the format of informational messages.
      */
-    String INFO_MESSAGE = INFO_COLOR + "\uD83D\uDEC8" + RESET;
+    String INFO_MESSAGE = INFO_COLOR + "\uD83D\uDEC8 ";
 
     /**
      * A constant string that represents the format of success messages.
      */
-    String SUCCESS_MESSAGE = SUCCESS_COLOR + "✔ " + RESET;
+    String SUCCESS_MESSAGE = SUCCESS_COLOR + "✔ ";
 
 }

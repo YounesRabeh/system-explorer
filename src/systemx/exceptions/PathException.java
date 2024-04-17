@@ -15,7 +15,8 @@ abstract class PathException extends Exception implements InterfaceErrors {
      * @param message the detail message.
      */
     public PathException(String message) {
-        super(message);
+        super(message + RESET);
+
     }
 
 }

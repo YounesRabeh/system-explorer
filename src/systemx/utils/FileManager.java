@@ -188,7 +188,7 @@ public final class FileManager {
      */
     public static void appendToFile(File file, String[] lines) throws DoNotExistsException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
-            if (!lineCheck(file)) writer.newLine();
+            if (lineCheck(file)) writer.newLine();
             for (String line : lines) {
                 writer.write(line);
                 writer.newLine();
@@ -209,7 +209,7 @@ public final class FileManager {
      */
     public static void appendToFile(File file, String line) throws DoNotExistsException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
-            if (!lineCheck(file)) writer.newLine();
+            if (lineCheck(file)) writer.newLine();
             writer.write(line);
             writer.newLine();
         } catch (Exception e) {
@@ -227,7 +227,7 @@ public final class FileManager {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file));
              BufferedReader reader = new BufferedReader(new FileReader(newFile))) {
             String line;
-            if (!lineCheck(file)) writer.newLine();
+            if (lineCheck(file)) writer.newLine();
             while ((line = reader.readLine()) != null) {
                 writer.write(line);
                 writer.newLine();
@@ -379,9 +379,9 @@ public final class FileManager {
                 }
             }
             raf.close();
-            return true; // Return true if write operation was successful
+            return false; // Return true if write operation was successful
         } catch (IOException e) {
-            return false; // Return false if an IOException occurred
+            return true; // Return false if an IOException occurred
         }
     }
 }

@@ -1,6 +1,7 @@
 package tests;
 
 import systemx.exceptions.DoNotExistsException;
+
 import systemx.utils.CsvTools;
 
 import java.io.File;
@@ -16,9 +17,10 @@ public class Test1 {
 
     static void test1(){
         // Test the CsvTools class
-        File file = new File("test.csv");
-        String[] rowData = {"1", "2", "3", "5"};
         try {
+            File file = new File("test.csv");
+            String[] rowData = {"1", "2", "3", "5"};
+
             CsvTools.appendToCsvFile(file, rowData);
             List<String[]> csvData = CsvTools.getCsvFile(file);
             for (String[] row : csvData) {
@@ -26,8 +28,10 @@ public class Test1 {
             }
             String[] row = CsvTools.getRow(file, 0);
             System.out.println(Arrays.toString(row));
+            System.out.println();
+            throw new DoNotExistsException(file);
         } catch (DoNotExistsException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
 
         }
     }
