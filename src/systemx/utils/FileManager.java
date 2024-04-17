@@ -15,7 +15,6 @@ import systemx.exceptions.DoNotExistsException;
  *
  * @author Younes Rabeh
  * @version under development
-
  */
 public final class FileManager {
     private FileManager(){}
@@ -79,6 +78,64 @@ public final class FileManager {
     }
 
     /**
+     * Reads the content of a file and returns it as a list of strings.
+     * @param file The file to read
+     * @param lineNumber The line number to get
+     * @return The line fetched from the file
+     * @throws DoNotExistsException if the file does not exist
+     */
+    public static String getFileLine(File file, Integer lineNumber) throws DoNotExistsException {
+        List<String> lines = getFileLines(file);
+        if (lineNumber < 0 || lineNumber > lines.size()) throw new IndexOutOfBoundsException();
+        return lines.get(lineNumber);
+    }
+
+    /**
+     * Reads the content of a file and returns it as a list of strings.
+     * @param file The file to read
+     * @param index The index of the row to get below
+     * @return The lines below the index fetched from the file
+     */
+    public static List<String> getLinesBelow(File file, Integer index) throws DoNotExistsException{
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            int currentIndex = 0;
+            boolean found = false;
+            while ((line = reader.readLine()) != null) {
+                if (currentIndex == index) found = true;
+                if (found) lines.add(line);
+                currentIndex++;
+            }
+        } catch (Exception e) {
+            throw new DoNotExistsException(file);
+        }
+        return lines;
+    }
+
+    /**
+     * Reads the content of a file and returns it as a list of strings.
+     * @param file The file to read
+     * @param index The index of the row to get above
+     * @return The lines above the index fetched from the file
+     */
+    public static List<String> getLinesAbove(File file, Integer index) throws DoNotExistsException{
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            int currentIndex = 0;
+            while ((line = reader.readLine()) != null) {
+                if (currentIndex < index) lines.add(line);
+                else break;
+                currentIndex++;
+            }
+        } catch (Exception e) {
+            throw new DoNotExistsException(file);
+        }
+        return lines;
+    }
+
+    /**
      * Counts the number of lines in a file.
      * <p>
      * This method counts the number of lines in a file and returns the count.
@@ -131,6 +188,7 @@ public final class FileManager {
      */
     public static void appendToFile(File file, String[] lines) throws DoNotExistsException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
+            if (!lineCheck(file)) writer.newLine();
             for (String line : lines) {
                 writer.write(line);
                 writer.newLine();
@@ -151,6 +209,7 @@ public final class FileManager {
      */
     public static void appendToFile(File file, String line) throws DoNotExistsException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
+            if (!lineCheck(file)) writer.newLine();
             writer.write(line);
             writer.newLine();
         } catch (Exception e) {
@@ -168,6 +227,7 @@ public final class FileManager {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file));
              BufferedReader reader = new BufferedReader(new FileReader(newFile))) {
             String line;
+            if (!lineCheck(file)) writer.newLine();
             while ((line = reader.readLine()) != null) {
                 writer.write(line);
                 writer.newLine();
@@ -229,6 +289,7 @@ public final class FileManager {
         overrideFile(file, lines.toArray(new String[0]));
     }
 
+    //FIXME: NO override file just insert
     /**
      * Overrides a section of a file with a file.
      * @param file The file to override
@@ -304,5 +365,23 @@ public final class FileManager {
         if (lineNumber < 1 || lineNumber > lines.size()) throw new IndexOutOfBoundsException();
         lines.remove(lineNumber - 1);
         overrideFile(file, lines.toArray(new String[0]));
+    }
+
+    static boolean lineCheck(File file) {
+        try {
+            RandomAccessFile raf = new RandomAccessFile(file, "rw");
+            long length = raf.length();
+            if (length > 0) {
+                raf.seek(length - 1); // Move to the end of the file
+                byte lastByte = raf.readByte();
+                if (lastByte != '\n' && lastByte != '\r') {
+                    raf.writeByte('\n'); // Add newline character if not present
+                }
+            }
+            raf.close();
+            return true; // Return true if write operation was successful
+        } catch (IOException e) {
+            return false; // Return false if an IOException occurred
+        }
     }
 }
