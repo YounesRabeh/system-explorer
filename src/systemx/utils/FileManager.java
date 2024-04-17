@@ -19,7 +19,6 @@ import systemx.exceptions.DoNotExistsException;
 public final class FileManager {
     private FileManager(){}
 
-
     /**
      * Reads the content of a file and returns it as a list of strings.
      * <p>
@@ -83,6 +82,7 @@ public final class FileManager {
      * @param lineNumber The line number to get
      * @return The line fetched from the file
      * @throws DoNotExistsException if the file does not exist
+     * @throws IndexOutOfBoundsException if the line number is out of bounds
      */
     public static String getFileLine(File file, Integer lineNumber) throws DoNotExistsException {
         List<String> lines = getFileLines(file);
@@ -254,6 +254,7 @@ public final class FileManager {
         }
     }
 
+    //FIXME: NO override file just insert
     /**
      * Overrides the content of a file with a string.
      * @param file The file to override
@@ -268,7 +269,6 @@ public final class FileManager {
         lines.set(lineNumber - 1, newLine);
         overrideFile(file, lines.toArray(new String[0]));
     }
-
 
     /**
      * Overrides a section of a file with an array of strings.
@@ -289,7 +289,6 @@ public final class FileManager {
         overrideFile(file, lines.toArray(new String[0]));
     }
 
-    //FIXME: NO override file just insert
     /**
      * Overrides a section of a file with a file.
      * @param file The file to override
