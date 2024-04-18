@@ -1,6 +1,7 @@
 package systemx.utils;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.List;
 
 import java.util.ArrayList;
@@ -247,6 +248,19 @@ public final class FileManager {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             for (String line : lines) {
                 writer.write(line);
+                writer.newLine();
+            }
+        } catch (Exception e) {
+            throw new DoNotExistsException(file);
+        }
+    }
+
+    public static void overrideFile(File file, List<String[]> lines) throws DoNotExistsException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            for (String[] line : lines) {
+                for (String s : line) {
+                    writer.write(s);
+                }
                 writer.newLine();
             }
         } catch (Exception e) {
