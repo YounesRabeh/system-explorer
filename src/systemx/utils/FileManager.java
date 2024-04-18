@@ -254,7 +254,6 @@ public final class FileManager {
         }
     }
 
-    //FIXME: NO override file just insert
     /**
      * Overrides the content of a file with a string.
      * @param file The file to override
@@ -279,7 +278,11 @@ public final class FileManager {
      * @throws DoNotExistsException if the file does not exist
      * @throws IndexOutOfBoundsException if the line numbers are out of bounds
      */
-    public static void overrideSection(File file, Integer start, Integer end, String[] newLines) throws DoNotExistsException {
+    public static void overrideSection(File file,
+                                       Integer start,
+                                       Integer end,
+                                       String[] newLines
+    ) throws DoNotExistsException {
         List<String> lines = getFileLines(file);
         if (start < 1 || start > lines.size()) throw new IndexOutOfBoundsException();
         if (end < 1 || end > lines.size()) throw new IndexOutOfBoundsException();
