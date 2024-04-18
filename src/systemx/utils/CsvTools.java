@@ -8,14 +8,12 @@ import java.util.ArrayList;
 
 import systemx.exceptions.DoNotExistsException;
 
-
-//FIXME: add exception throwing
-
+//TODO: add the exception throw to the methods that can throw an exception (safe)
 /**
  * A utility class for working with CSV files
  *
  * @author Younes Rabeh
- * @version under development
+ * @version 1.0
  */
 public final class CsvTools {
     // The file must be in the format of a CSV file, the first line is the header, and the rest are the data
@@ -31,7 +29,7 @@ public final class CsvTools {
      * @param rowData The data to append
      * @throws DoNotExistsException If the file does not exist
      */
-    public static void appendToCsvFile(File file, String[] rowData) throws DoNotExistsException {
+    private static void appendToCsvFile(File file, String[] rowData) throws DoNotExistsException {
         FileManager.appendToFile(file, String.join(",", rowData));
     }
 
@@ -41,7 +39,7 @@ public final class CsvTools {
      * @return The data in the CSV file
      * @throws DoNotExistsException If the file does not exist
      */
-    public static List<String[]> getCsvFile(File file) throws DoNotExistsException {
+    private static List<String[]> getCsvFile(File file) throws DoNotExistsException {
         List<String[]> csvData = new ArrayList<>();
         List<String> lines = FileManager.getFileLines(file);
         for (String line : lines) {
@@ -98,6 +96,16 @@ public final class CsvTools {
     }
 
     /**
+     * Gets the Titles of the columns in a CSV file
+     * @param file The CSV file
+     * @return The titles of the columns
+     * @throws DoNotExistsException If the file does not exist
+     */
+    public static String[] getColumnsTitles(File file) throws DoNotExistsException {
+        return getRow(file, 0);
+    }
+
+    /**
      * Gets a column from a CSV file
      * @param file The CSV file
      * @param columnIndex The index of the column to get
@@ -114,25 +122,6 @@ public final class CsvTools {
             }
         }
         return columnData.toArray(new String[0]);
-    }
-
-    /**
-     * Appends a column to a CSV file. Best effort. If the column data is less than the number of rows,
-     * the column will be appended to the rows that have data.
-     * @param file The CSV file
-     * @param columnData The data to append
-     * @throws DoNotExistsException If the file does not exist
-     */
-    public static void appendColumn(File file, String[] columnData) throws DoNotExistsException {
-        List<String> lines = new ArrayList<>(FileManager.getFileLines(file));
-        final int size = columnData.length;
-        for (int i = 0; i < lines.size(); i++) {
-            if (i < size){
-                lines.set(i, lines.get(i) + "," + columnData[i]);
-            }
-
-        }
-        FileManager.overrideFile(file, lines.toArray(new String[0]));
     }
 
     /**
@@ -191,6 +180,24 @@ public final class CsvTools {
         }
     }
 
+    /**
+     * Appends a column to a CSV file. Best effort. If the column data is less than the number of rows,
+     * the column will be appended to the rows that have data.
+     * @param file The CSV file
+     * @param columnData The data to append
+     * @throws DoNotExistsException If the file does not exist
+     */
+    public static void appendColumn(File file, String[] columnData) throws DoNotExistsException {
+        List<String> lines = new ArrayList<>(FileManager.getFileLines(file));
+        final int size = columnData.length;
+        for (int i = 0; i < lines.size(); i++) {
+            if (i < size){
+                lines.set(i, lines.get(i) + "," + columnData[i]);
+            }
+        }
+        FileManager.overrideFile(file, lines.toArray(new String[0]));
+    }
+
     //TODO: pick-up the rows using the init primary key, [get throughout the record]
     /**
      * Inserts a row into a CSV file
@@ -232,37 +239,56 @@ public final class CsvTools {
         FileManager.overrideFile(file, lines.toArray(new String[0]));
     }
 
-    //TODO: add column insertion
-
-
-
-
-
-
-
-
-    public static void main(String[] args) {
-        try {
-            File file = new File("test.csv"); // replace with your file path
-            String[] rowData = {"data1", "data2", "data5", "jvc", "SCS", "L ADJC"}; // replace with your data
-            int index = 1; // replace with your desired index
-            try {
-                //List<String[]> csvData = getColumns(file, 1,2);
-                String[] data = {"sc", "sc", "sc"};
-                String[] data1 = {"sc1", "sc1", "sc1"};
-                List<String[]> get = Arrays.asList(data, data1);
-                //insertRows(file, 0, get);
-                appendColumn(file, rowData);
-                List<String[]> row = getRowsBelow(file, 1);
-                System.out.println(Arrays.deepToString(row.toArray()));
-            } catch (DoNotExistsException e) {
-                System.out.println(e.getMessage());
-            }
-        } catch (IndexOutOfBoundsException e) {
-            System.out.println("Index out of bounds");
-        }
+    /**
+     * Deletes a row from a CSV file
+     * @param file The CSV file
+     * @param index The index of the row to delete
+     * @throws DoNotExistsException If the file does not exist
+     * @throws IndexOutOfBoundsException If the index is out of bounds
+     */
+    public static void deleteRow(File file, int index) throws DoNotExistsException {
+        List<String> lines = new ArrayList<>(FileManager.getFileLines(file));
+        if (index < 0 || index >= lines.size()) throw new IndexOutOfBoundsException();
+        lines.remove(index);
+        FileManager.overrideFile(file, lines.toArray(new String[0]));
     }
 
+    /**
+     * Deletes multiple rows from a CSV file
+     * @param file The CSV file
+     * @param integers The indices of the rows to delete
+     * @throws DoNotExistsException If the file does not exist
+     * @throws IndexOutOfBoundsException If the index is out of bounds
+     */
+    public static void deleteRows(File file, Integer... integers) throws DoNotExistsException {
+        List<String> lines = new ArrayList<>(FileManager.getFileLines(file));
+        for (int index : integers) {
+            if (index < 0 || index >= lines.size()) throw new IndexOutOfBoundsException();
+            lines.remove(index);
+        }
+        FileManager.overrideFile(file, lines.toArray(new String[0]));
+    }
 
-
+    /**
+     * Deletes a column from a CSV file
+     * @param file The CSV file
+     * @param index The index of the column to delete
+     * @throws DoNotExistsException If the file does not exist
+     */
+    public static void deleteColumn(File file, int index) throws DoNotExistsException {
+        List<String> lines = new ArrayList<>(FileManager.getFileLines(file));
+        for (int i = 0; i < lines.size(); i++) {
+            String[] row = lines.get(i).split(",");
+            if (index < 0 || index >= row.length) throw new IndexOutOfBoundsException();
+            StringBuilder rowString = new StringBuilder();
+            for (int j = 0; j < row.length; j++) {
+                if (j != index) {
+                    rowString.append(row[j]).append(",");
+                }
+            }
+            rowString.deleteCharAt(rowString.length() - 1);
+            lines.set(i, rowString.toString());
+        }
+        FileManager.overrideFile(file, lines.toArray(new String[0]));
+    }
 }

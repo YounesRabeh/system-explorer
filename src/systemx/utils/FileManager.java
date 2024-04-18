@@ -1,9 +1,7 @@
 package systemx.utils;
 
-import java.io.*;
-import java.util.Arrays;
 import java.util.List;
-
+import java.io.*;
 import java.util.ArrayList;
 
 import systemx.exceptions.DoNotExistsException;
@@ -15,7 +13,7 @@ import systemx.exceptions.DoNotExistsException;
  * This class provides methods to work with an individual file.
  *
  * @author Younes Rabeh
- * @version under development
+ * @version 1.0
  */
 public final class FileManager {
     private FileManager(){}
@@ -383,7 +381,7 @@ public final class FileManager {
         overrideFile(file, lines.toArray(new String[0]));
     }
 
-    static boolean lineCheck(File file) {
+    private static boolean lineCheck(File file) {
         try {
             RandomAccessFile raf = new RandomAccessFile(file, "rw");
             long length = raf.length();
