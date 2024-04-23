@@ -1,15 +1,11 @@
 package systemx.utils;
 
-import java.nio.file.Path;
+
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 import systemx.exceptions.DoNotExistsException;
 import systemx.exceptions.FailedToCreateException;
 import java.io.IOException;
-import java.net.URISyntaxException;
-
 
 /**
  * A utility class for paths related operations.
@@ -22,24 +18,6 @@ import java.net.URISyntaxException;
 public final class PathResolver {
     private PathResolver() {
         // Private constructor to prevent instantiation
-    }
-
-    /**
-     * Gets the directory of the currently executing JAR file.
-     *
-     * @return The directory of the currently executing JAR file.
-     * If the JAR file cannot be determined, returns the current working directory.
-     * @throws URISyntaxException If the URI syntax is invalid
-     */
-    public static String getExecutionDirectory() throws URISyntaxException {
-        String jarFilePath = PathResolver.class.getProtectionDomain()
-                .getCodeSource().getLocation().toURI().getPath();
-        Path jarPath = Paths.get(jarFilePath);
-
-        if (!Files.exists(jarPath) || !Files.isRegularFile(jarPath)) {
-            return Paths.get("").toAbsolutePath().toString();
-        }
-        return jarPath.getParent().toString();
     }
 
     /**
@@ -195,12 +173,11 @@ public final class PathResolver {
      * @param directoryPath The path of the directory to create.
      * @return The created directory.
      * @throws NullPointerException If the provided {@code directoryPath} is null.
-     * @throws FailedToCreateException If the directory could not be created.
      */
-    public static File createDirectory(String directoryPath) throws FailedToCreateException {
+    public static File createDirectory(String directoryPath) {
         if (checkNull(directoryPath)) throw new NullPointerException();
-        final File directory = new File(directoryPath);
-        if (!directory.mkdirs()) throw new FailedToCreateException(directoryPath);
+        File directory = new File(directoryPath);
+        directory.mkdir();
         return directory;
     }
 
@@ -313,7 +290,7 @@ public final class PathResolver {
      * @param objects The objects to check for null.
      * @return true if any of the objects are null, false otherwise.
      */
-    private static boolean checkNull(Object... objects) {
+    public static boolean checkNull(Object... objects) {
         for (Object object : objects) {
             if (object == null) return true;
         }

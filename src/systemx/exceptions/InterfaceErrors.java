@@ -7,9 +7,9 @@ package systemx.exceptions;
  * @author Younes Rabeh
  * @version 1.0
  */
-interface InterfaceErrors {
+public interface InterfaceErrors  {
 
-    /**
+        /**
      * A constant string that represents the RESET color in console.
      */
     String RESET = "\033[0m";
