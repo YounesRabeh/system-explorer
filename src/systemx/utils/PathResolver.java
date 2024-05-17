@@ -7,7 +7,7 @@ import systemx.exceptions.DoNotExistsException;
 import systemx.exceptions.FailedToCreateException;
 import java.io.IOException;
 
-/**
+ /**
  * A utility class for paths related operations.
  * <p>
  * This class provides methods to work with system paths.

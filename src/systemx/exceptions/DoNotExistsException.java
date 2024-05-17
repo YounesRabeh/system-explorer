@@ -2,6 +2,9 @@ package systemx.exceptions;
 
 import java.io.File;
 
+/**
+ * Thrown to indicate that a file or directory does not exist.
+ */
 public class DoNotExistsException extends PathException {
 
     /**
@@ -19,7 +22,7 @@ public class DoNotExistsException extends PathException {
      * @param path the path of the file or directory that does not exist.
      */
     public DoNotExistsException(String path) {
-        super(ERROR_MESSAGE + path + DOES_NOT_EXIST);
+        super(ERROR_MESSAGE + "\"" + path + DOES_NOT_EXIST);
     }
 
     /**
@@ -28,7 +31,7 @@ public class DoNotExistsException extends PathException {
      * @param parentPath the path of the parent directory.
      */
     public DoNotExistsException(String path, String parentPath) {
-        super(ERROR_MESSAGE + path + DOES_NOT_EXIST_IN + parentPath + "\"");
+        super(ERROR_MESSAGE + "\"" + path + DOES_NOT_EXIST_IN + parentPath + "\"");
     }
 
     /**
@@ -36,7 +39,7 @@ public class DoNotExistsException extends PathException {
      * @param path the path of the file or directory that does not exist.
      */
     public DoNotExistsException(File path) {
-        super(ERROR_MESSAGE + path + DOES_NOT_EXIST);
+        super(ERROR_MESSAGE + "\"" + path + DOES_NOT_EXIST);
     }
 
     /**
@@ -45,6 +48,6 @@ public class DoNotExistsException extends PathException {
      * @param parentPath the path of the parent directory.
      */
     public DoNotExistsException(File path, File parentPath) {
-        super(ERROR_MESSAGE + parentPath.toString() + DOES_NOT_EXIST_IN + path + "\"");
+        super(ERROR_MESSAGE + "\"" + parentPath.toString() + DOES_NOT_EXIST_IN + path + "\"");
     }
 }

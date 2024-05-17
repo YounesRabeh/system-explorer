@@ -291,4 +291,49 @@ public final class CsvTools {
         }
         FileManager.overrideFile(file, lines.toArray(new String[0]));
     }
+
+
+    /**
+     * Overrides a row in a CSV file
+     * @param file The CSV file
+     * @param index The index of the row to override
+     * @param rowData The new data to override the row with
+     * @throws DoNotExistsException If the file does not exist
+     */
+    public static void overrideRow(File file, int index, String[] rowData) throws DoNotExistsException {
+        List<String> lines = new ArrayList<>(FileManager.getFileLines(file));
+        if (index < 0 || index >= lines.size()) throw new IndexOutOfBoundsException();
+        StringBuilder rowString = new StringBuilder();
+        for (String data : rowData) {
+            rowString.append(data).append(",");
+        }
+        rowString.deleteCharAt(rowString.length() - 1);
+        lines.set(index, rowString.toString());
+        FileManager.overrideFile(file, lines.toArray(new String[0]));
+    }
+
+    /**
+     * Overrides a CSV file with new data
+     * @param file The CSV file
+     * @param data The new data to override the file with
+     * @throws DoNotExistsException If the file does not exist
+     */
+    public static void overrideFile(File file, List<String[]> data) throws DoNotExistsException {
+        List<String> lines = new ArrayList<>();
+        for (String[] row : data) {
+            lines.add(String.join(",", row));
+        }
+        FileManager.overrideFile(file, lines.toArray(new String[0]));
+    }
+
+    /**
+     * Overrides a CSV file with new file data
+     * @param file The CSV file
+     * @param newFile The new file to override the file with
+     * @throws DoNotExistsException If the file does not exist
+     */
+    public static void overrideFile(File file, File newFile) throws DoNotExistsException {
+        List<String> lines = new ArrayList<>(FileManager.getFileLines(newFile));
+        FileManager.overrideFile(file, lines.toArray(new String[0]));
+    }
 }
